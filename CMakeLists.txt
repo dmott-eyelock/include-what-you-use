@@ -182,3 +182,46 @@ if(PYTHONINTERP_FOUND)
     COMMAND ${PYTHON_EXECUTABLE} iwyu_tool_test.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
+
+
+# <InstallRequiredSystemLibraries>
+message(AUTHOR_WARNING "Add system runtime components to cpack installation here (3rd party dlls)")
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS 
+
+)
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_COMPONENT Runtime)
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${CMAKE_INSTALL_BINDIR})
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS TRUE)
+if(MSVC)
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${CMAKE_INSTALL_BINDIR}/${CMAKE_BUILD_TYPE})
+endif()
+if(DEBUG)
+  set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)
+endif()
+#</InstallRequiredSystemLibraries>
+
+
+find_file(LIB_CLANG_CPP_DLL NAMES libclang-cpp.dll REQUIRED)
+find_file(LIB_LLVM_DLL NAMES libLLVM.dll REQUIRED)
+find_file(ZLIB1_DLL NAMES zlib1.dll REQUIRED)
+find_file(LIBFFi_7_DLL NAMES libffi-7.dll REQUIRED)
+find_file(LIBSTDCXX_6_DLL NAMES libstdc++-6.dll REQUIRED)
+
+message(STATUS "Installing files:" 
+  \n\t${LIB_CLANG_CPP_DLL}
+  \n\t${LIB_LLVM_DLL}
+  \n\t${ZLIB1_DLL}
+  \n\t${LIBFFi_7_DLL}
+  \n\t${LIBSTDCXX_6_DLL}
+)
+
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS 
+  ${LIB_CLANG_CPP_DLL}
+  ${LIB_LLVM_DLL}
+  ${ZLIB1_DLL}
+  ${LIBFFi_7_DLL}
+  ${LIBSTDCXX_6_DLL}
+)
+
+include(InstallRequiredSystemLibraries)
+include(CPack)
